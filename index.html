@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG</title>
+    <style>
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        body {
+            background-color: rgb(243, 161, 161);
+        }
+
+        .title {
+            font-weight: bolder;
+            font-size: 20px;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="title">Input: [0, 4, 0, 0, 0, 6, 0, 6, 4, 0]</p>
+    <div id="svg-container"></div>
+    <p class="title">Output</p>
+    <p id="para"></p>
+    <div id="out-svg-container">
+
+    </div>
+
+    <script>
+        let data = [0, 4, 0, 0, 0, 6, 0, 6, 4, 0];
+        let sampleData = [...data];
+        function updateZeros(arr) {
+            let lastNonZero = null;
+            for (let i = 0; i < arr.length - 1; i++) {
+                if (arr[i] !== 0) {
+                    lastNonZero = arr[i];
+                } else if (lastNonZero !== null) {
+                    arr[i] = lastNonZero;
+                }
+            }
+            return arr;
+        }
+
+        let heights = updateZeros(data);
+        heights = heights.map((ele) => ele * 20);
+        let final = [];
+        for (let i = 0; i < data.length; i++) {
+            if (sampleData[i] == 0 && heights[i] == 0) {
+                final.push([sampleData[i], heights[0], 0])
+            }
+            if (sampleData[i] == 0 && heights[i] != 0) {
+                final.push([sampleData[i], heights[i], "blue"]);
+            }
+            if (sampleData[i] != 0 && heights[i] != 0) {
+                final.push([sampleData[i], heights[i], "yellow"]);
+            }
+        }
+
+        let svgContainer = document.getElementById('svg-container');
+        let outSvgContainer = document.getElementById("out-svg-container");
+
+        function createSVG(final) {
+            let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '500');
+            svg.setAttribute('height', '300');
+
+            let rectWidth = 30;
+            let rectMargin = 5;
+
+            for (let i = 0; i < final.length; i++) {
+                let height = final[i][1];
+                let x = i * (rectWidth + rectMargin);
+
+                let y = 200 - height;
+                let rectHeight = height === 0 ? 0 : height; // Set rect height to 0 if height is 0
+
+                if (height === 0) {
+                    let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', x);
+                    line.setAttribute('y1', 200);
+                    line.setAttribute('x2', x + rectWidth);
+                    line.setAttribute('y2', 200);
+                    line.setAttribute('stroke', 'black');
+                    svg.appendChild(line);
+                } else {
+                    let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x);
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('width', rectWidth);
+                    rect.setAttribute('height', rectHeight);
+                    rect.setAttribute('fill', final[i][2]);
+                    svg.appendChild(rect);
+                }
+            }
+
+            return svg;
+        }
+
+        function generateOutSvg(final) {
+            let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute("width", "500");
+            svg.setAttribute("height", "600");
+            let svgWidth = 30;
+            let svgMargin = 5;
+            for (let i = 0; i < final.length; i++) {
+                let height = final[i][1];
+                let x = i * (svgWidth + svgMargin);
+                let y = 200 - height;
+                let rectHeight = height === 0 ? 0 : height;
+                if (final[i][2] == "blue") {
+                    let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x);
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('width', svgWidth);
+                    rect.setAttribute('height', rectHeight);
+                    rect.setAttribute('fill', final[i][2]);
+                    svg.appendChild(rect);
+                }
+                else {
+                    let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', x);
+                    line.setAttribute('y1', 200);
+                    line.setAttribute('x2', x + svgWidth);
+                    line.setAttribute('y2', 200);
+                    line.setAttribute('stroke', 'black');
+                    svg.appendChild(line);
+                }
+            }
+            return svg;
+
+        }
+
+        let svgElement = createSVG(final);
+        svgContainer.appendChild(svgElement);
+        let outPutSvg = generateOutSvg(final);
+        outSvgContainer.appendChild(outPutSvg)
+
+
+
+        function calculate(final) {
+            let sum = 0;
+            for (let i = 0; i < final.length; i++) {
+                if (final[i][2] == "blue") {
+                    sum += final[i][1];
+                }
+            }
+            let para = document.querySelector("#para");
+            para.innerHTML = sum / 20 + " units";
+        }
+        calculate(final);
+    </script>
+
+</body>
+
+</html>
