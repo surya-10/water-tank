@@ -11,22 +11,19 @@
             margin: 0 auto;
         }
 
-        body {
-            background-color: rgb(187, 160, 185);
-        }
-
         .title {
             font-weight: bolder;
             font-size: 20px;
             color: black;
         }
 
-        .input-box{
+        .input-box {
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .main{
+
+        .main {
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -45,7 +42,8 @@
             font-size: 20px;
             font-weight: bold;
         }
-        button{
+
+        button {
             padding: 8px 15px;
             outline: none;
             margin-top: 20px;
@@ -55,10 +53,12 @@
             font-size: 16px;
 
         }
-        input{
+
+        input {
             padding: 5px 10px;
         }
-        .svg-container{
+
+        .svg-container {
             margin-top: 30px;
         }
     </style>
@@ -70,7 +70,7 @@
         <div class="input-box">
             <div class="inp">
                 <label>Give input without space and any special characters</label>
-                <input type="text" placeholder="eg: 40006006020" required id="data"/>
+                <input type="text" placeholder="eg: 40006006020" required id="data" />
             </div>
         </div>
         <div>
@@ -80,7 +80,7 @@
     <div id="svg-container">
         <p class="given-inp"> </p>
     </div>
-    <p class="title">Output</p>
+    
     <p id="para"></p>
     <div id="out-svg-container"></div>
 
@@ -89,14 +89,25 @@
         let btn = document.querySelector(".button");
         btn.addEventListener("click", findWaterLevel);
 
-        function findWaterLevel(){
+        function findWaterLevel() {
             let data = document.getElementById("data").value.split("").map(Number);
             inputData = data;
             let dataCopy = [...inputData];
             let sampleData = [...dataCopy];
             function updateZeros(arr) {
+                let ind = arr.length - 1;
+                let count = 0;
+                while (arr[ind] == 0) {
+                    if (arr[ind] == 0) {
+                        count++;
+                        ind--;
+                    }
+                    else {
+                        break;
+                    }
+                }
                 let lastNonZero = null;
-                for (let i = 0; i < arr.length - 1; i++) {
+                for (let i = 0; i < arr.length - count-1; i++) {
                     if (arr[i] !== 0) {
                         lastNonZero = arr[i];
                     } else if (lastNonZero !== null) {
@@ -117,7 +128,7 @@
                     final.push([sampleData[i], heights[i], "blue"]);
                 }
                 if (sampleData[i] != 0 && heights[i] != 0) {
-                    final.push([sampleData[i], heights[i], "yellow"]);
+                    final.push([sampleData[i], heights[i], "orange"]);
                 }
             }
 
@@ -179,7 +190,7 @@
             let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             svg.setAttribute("width", "100%");
             svg.setAttribute("height", "300");
-            let svgWidth = 30;
+            let svgWidth = 25;
             let svgMargin = 5;
             for (let i = 0; i < final.length; i++) {
                 let height = final[i][1];
